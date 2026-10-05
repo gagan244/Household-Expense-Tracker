@@ -1,0 +1,6 @@
+{
+  "name": "Household Expense Tracker",
+  "description": "A simple full-stack MERN CRUD application for managing household expenses.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
