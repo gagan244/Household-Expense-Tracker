@@ -115,7 +115,7 @@ export default function App() {
             </div>
             <div>
               <h1 className="text-base sm:text-lg font-bold text-slate-900 leading-tight">
-                Household Expense Tracker
+                Expense Tracker
               </h1>
               <p className="text-xs text-slate-500 font-medium">MERN Stack CRUD Application</p>
             </div>
@@ -194,7 +194,7 @@ export default function App() {
 
       {/* Clean Footer */}
       <footer className="mt-12 py-6 border-t border-slate-200 text-center text-xs text-slate-500">
-        <p>Household Expense Tracker &bull; Full-stack MERN CRUD Pattern</p>
+        <p>Expense Tracker &bull; Full-stack MERN CRUD Pattern</p>
       </footer>
     </div>
   );

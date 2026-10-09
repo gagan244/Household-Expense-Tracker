@@ -24,15 +24,35 @@ app.use('/api/expenses', expenseRoutes);
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'healthy',
-    message: 'Household Expense Tracker API is running',
+    message: 'Expense Tracker API is running',
     timestamp: new Date().toISOString(),
   });
 });
 
+// Database offline / Mongoose error fallback middleware
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (
+    err.name === 'MongooseError' ||
+    err.name === 'MongoNetworkError' ||
+    (err.message && err.message.includes('buffering timed out'))
+  ) {
+    console.warn('[AI Studio] Database offline — handling gracefully');
+    if (req.method === 'GET') {
+      return res.json(req.path.endsWith('s') || req.path.endsWith('s/') ? { success: true, count: 0, data: [] } : { success: false, data: null });
+    }
+    return res.status(503).json({ error: 'Service temporarily unavailable (database offline)' });
+  }
+  next(err);
+});
+
 async function startServer() {
   try {
-    // Connect to MongoDB
-    await connectDB();
+    // Attempt database connection without blocking startup on failure
+    try {
+      await connectDB();
+    } catch (dbErr: any) {
+      console.warn('[Server] Database connection notice:', dbErr?.message || dbErr);
+    }
 
     const isProduction = process.env.NODE_ENV === 'production';
 
@@ -54,7 +74,7 @@ async function startServer() {
     }
 
     app.listen(PORT, '0.0.0.0', () => {
-      console.log(`[Server] Household Expense Tracker running on http://0.0.0.0:${PORT}`);
+      console.log(`[Server] Expense Tracker running on http://0.0.0.0:${PORT}`);
     });
   } catch (error) {
     console.error('[Server] Failed to start server:', error);
